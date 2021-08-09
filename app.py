@@ -9,7 +9,8 @@ from firebase_admin import credentials, firestore, initialize_app
 # Initialize Flask app
 app = Flask(__name__)
 
-# Initialize Firestore DB - need to have your own firebase_key.json file in project root - the name may vary
+# Initialize Firestore DB:
+# need to have your own firebase_key.json file in project root - the name may vary, see README.MD
 cred = credentials.Certificate('firebase_key.json')
 default_app = initialize_app(cred)
 db = firestore.client()
@@ -40,7 +41,7 @@ def read():
     try:
         # Check if ID was passed to URL query
         todo_id = request.json['id']
-        # todo_id = request.args.get('id')
+        # todo_id = request.args.get('id') #couldn't get this working with Postman..
         if todo_id:
             print("got id for listing: ", todo_id)
             todo = todo_ref.document(todo_id).get()
@@ -73,7 +74,7 @@ def delete():
     try:
         # Check for ID in URL query
         todo_id = request.json['id']
-        # todo_id = request.args.get('id')
+        # todo_id = request.args.get('id') # couldn't get this working with Postman..
         todo_ref.document(todo_id).delete()
         return jsonify({"success": True}), 200
     except Exception as e:
@@ -82,9 +83,8 @@ def delete():
 @app.route('/test', methods=['GET'])
 def test():
     """
-        update() : Update document in Firestore collection with request body.
-        Ensure you pass a custom ID as part of json body in post request,
-        e.g. json={'id': '1', 'title': 'Write a blog post today'}
+        test() : test code to read value, increment and save again 10 times. 
+        Speed test - it's fast enough!
     """
     todo_id = "2"
     todo = todo_ref.document(todo_id).get()
@@ -98,14 +98,6 @@ def test():
         print("incremented: ", todo.to_dict()['counter'])
     counter_return = todo_ref.document(todo_id).get()
     return jsonify(counter_return.to_dict()), 200
-    # return jsonify(todo.to_dict()), 200
-
-    # try:
-    #     id = request.json['id']
-    #     todo_ref.document(id).update(request.json)
-    #     return jsonify({"success": True}), 200
-    # except Exception as e:
-    #     return f"An Error Occured: {e}"
 
 port = int(os.environ.get('PORT', 8080))
 if __name__ == '__main__':
