@@ -9,5 +9,5 @@ Add firebase_key.json to project root.
 Add firebase_key.json to .gitignore.
 
 deploy to the cloud with Google Cloud SDK: 
-need to remove firebase_key.json from .gitignore for this to work!
+need to remove firebase_key.json from .gitignore for this to work. Could use another branch for this...
 gcloud builds submit --config cloudbuild.yaml .
